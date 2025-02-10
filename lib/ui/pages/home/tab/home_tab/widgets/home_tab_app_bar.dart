@@ -9,22 +9,19 @@ class HomeTabAppBar extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Row(
           children: [
-            //프로필
-            CircleAvatar(
-              backgroundColor: Colors.orange[800],
-              child: Text(
-                '시은',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
             SizedBox(width: 10),
             // 날짜 선택
-            Text(
-              '2025 1월 13일(월)',
-              style: TextStyle(fontSize: 20),
+            GestureDetector(
+              onTap: () {
+                print('매장 선택됨');
+              },
+              child: Text(
+                '뚜레쥬르 강남역점',
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             Icon(Icons.arrow_drop_down),
           ],
