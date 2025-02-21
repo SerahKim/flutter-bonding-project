@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class TagUI extends StatelessWidget {
   final String text;
   final Color color;
+  final Color textColor;
 
   const TagUI({
     super.key,
     required this.text,
     required this.color,
+    required this.textColor,
   });
 
   @override
@@ -21,7 +23,10 @@ class TagUI extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5.0),
         child: Text(
           text,
-          style: TextStyle(fontSize: 10),
+          style: TextStyle(
+            fontSize: 10,
+            color: textColor,
+          ),
         ),
       ),
     );

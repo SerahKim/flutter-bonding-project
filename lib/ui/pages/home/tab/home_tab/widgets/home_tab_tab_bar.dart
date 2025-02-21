@@ -1,5 +1,6 @@
-import 'package:bonding/ui/pages/%08home/tab/home_tab/widgets/home_tab_check_list/check_list_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bonding/ui/pages/%08home/tab/home_tab/widgets/home_tab_check_list/check_list_view.dart';
 
 class HomeTabTabBar extends StatefulWidget {
   @override
@@ -7,17 +8,12 @@ class HomeTabTabBar extends StatefulWidget {
 }
 
 class _HomeTabBarState extends State<HomeTabTabBar>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController tabController;
+  TextEditingController tabNameController = TextEditingController();
 
-  final List<Tab> tabs = <Tab>[
+  List<Tab> tabs = <Tab>[
     Tab(text: '매니저'),
-    Tab(text: '주방'),
-    Tab(text: '샌드위치'),
-    Tab(text: '홀'),
-    Tab(text: '파트 1'),
-    Tab(text: '파트 2'),
-    Tab(text: '파트 3'),
   ];
 
   @override
@@ -29,7 +25,87 @@ class _HomeTabBarState extends State<HomeTabTabBar>
   @override
   void dispose() {
     tabController.dispose();
+    tabNameController.dispose();
     super.dispose();
+  }
+
+  // 바텀시트 표시
+  void showBottomSheet() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+                print('탭 관리 선택됨');
+                // TODO: 탭 관리 페이지 이동 또는 기능 추가
+              },
+              child: Text('탭 관리'),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+                showTabNameDialog();
+              },
+              child: Text('탭 추가'),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('취소', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        );
+      },
+    );
+  }
+
+  // 탭 이름 입력 Dialog
+  void showTabNameDialog() {
+    tabNameController.clear();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('새 탭 추가'),
+          content: TextField(
+            controller: tabNameController,
+            decoration: InputDecoration(hintText: '탭 이름 입력'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                addNewTab(tabNameController.text.trim());
+              },
+              child: Text('추가'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 새로운 탭 추가
+  void addNewTab(String tabName) {
+    setState(() {
+      String newTabName =
+          tabName.isNotEmpty ? tabName : '새 탭 ${tabs.length + 1}';
+      tabs.add(Tab(text: newTabName));
+
+      tabController.dispose();
+      tabController = TabController(vsync: this, length: tabs.length);
+    });
   }
 
   @override
@@ -44,17 +120,12 @@ class _HomeTabBarState extends State<HomeTabTabBar>
               padding: const EdgeInsets.all(20.0),
               child: Text(
                 '오늘의 체크리스트',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             Spacer(),
             IconButton(
-              onPressed: () {
-                print('탭 관리');
-              },
+              onPressed: showBottomSheet,
               icon: Icon(Icons.pending_outlined),
             ),
           ],
@@ -78,17 +149,15 @@ class _HomeTabBarState extends State<HomeTabTabBar>
             tabs: tabs,
           ),
         ),
-        // TabBarView를 SizedBox로 감싸 높이를 제한
-        // TODO : SizedBox의 높이가 체크리스트 개수와 높이에 따라 변화할 수 있음.
         SizedBox(
           height: 5000,
           child: TabBarView(
             controller: tabController,
             children: tabs.map((tab) {
               return ListView.builder(
-                physics: NeverScrollableScrollPhysics(), // 내부 스크롤 방지
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: 20, // 예제 데이터
+                itemCount: 20,
                 itemBuilder: (context, index) {
                   return CheckListView();
                 },
