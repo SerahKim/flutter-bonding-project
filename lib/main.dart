@@ -1,3 +1,4 @@
+import 'package:bonding/ui/pages/%08home/home_page.dart';
 import 'package:bonding/ui/pages/start/start_page.dart';
 import 'package:bonding/ui/pages/welcome/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: WelcomePage(),
+      home: HomePage(),
     );
   }
 }
